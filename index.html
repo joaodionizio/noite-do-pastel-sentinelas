@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Pedidos - Noite do Pastel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --azul-fundo: #0056b3;
+            --azul-escuro: #003366;
+            --amarelo-brilhante: #ffd200;
+            --amarelo-ouro: #e6bd00;
+            --branco: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            /* Efeito Sunburst igual ao do panfleto */
+            background: 
+                radial-gradient(circle at 50% 100%, rgba(255,255,255,0.2) 0%, transparent 50%),
+                repeating-conic-gradient(from 0deg at 50% 100%, var(--azul-fundo) 0deg 10deg, var(--azul-escuro) 10deg 20deg);
+            background-attachment: fixed;
+            color: var(--branco);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Textura de papel sutil por cima de tudo */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .card-registro {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 210, 0, 0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-sm {
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px rgba(255,210,0,0.5));
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--amarelo-brilhante);
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--amarelo-brilhante);
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--azul-escuro);
+            font-size: 16px;
+            font-family: 'Montserrat', sans-serif;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--amarelo-brilhante);
+            box-shadow: 0 0 10px rgba(255, 210, 0, 0.5);
+        }
+
+        /* Botão estilo Faixa/Ribbon */
+        .btn-registrar {
+            background: linear-gradient(to bottom, var(--amarelo-brilhante), var(--amarelo-ouro));
+            color: var(--azul-escuro);
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 800;
+            border-radius: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 0 #b38600;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .btn-registrar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #b38600;
+        }
+
+        .btn-registrar:active {
+            transform: translateY(2px);
+            box-shadow: 0 0px 0 #b38600;
+        }
+
+        #mensagem {
+            margin-top: 20px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card-registro">
+    <img src="./logo.svg" alt="Logo Sentinelas da Manhã" class="logo-sm">
+    <h1>Novo Pedido</h1>
+
+    <div class="form-group">
+        <label for="nome">Nome do Cliente</label>
+        <input type="text" id="nome" placeholder="Ex: João Silva" required>
+    </div>
+
+    <div class="form-group">
+        <label for="numero">Número do Pedido</label>
+        <input type="number" id="numero" placeholder="000" required>
+    </div>
+
+    <div class="form-group">
+        <label for="status">Status do Pedido</label>
+        <select id="status">
+            <option value="feito">Pedido Feito</option>
+            <option value="preparo">Em Preparo</option>
+            <option value="pronto">Pedido Pronto</option>
+        </select>
+    </div>
+
+    <button class="btn-registrar" onclick="salvarPedido()">Cadastrar Pedido</button>
+    <div id="mensagem"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    const supabaseClient = window.supabase.createClient(
+        "https://ypmizhvosfiiearmvzyd.supabase.co",
+        "sb_publishable_3ZRLsJcSR6TMZTJ6N61icw_2DyGzvWh"
+    );
+
+    async function salvarPedido() {
+        const nome = document.getElementById('nome').value;
+        const numero = document.getElementById('numero').value;
+        const status = document.getElementById('status').value;
+        const msgDiv = document.getElementById('mensagem');
+
+        if (!nome || !numero) {
+            alert("Por favor, preencha todos os campos!");
+            return;
+        }
+
+        const { data, error } = await supabaseClient
+            .from('pedidos')
+            .insert([
+                { cliente: nome, pedido: parseInt(numero), status: status }
+            ]);
+
+        if (error) {
+            msgDiv.style.display = "block";
+            msgDiv.style.backgroundColor = "#ff4d4d";
+            msgDiv.innerText = "Erro ao salvar: " + error.message;
+        } else {
+            msgDiv.style.display = "block";
+            msgDiv.style.backgroundColor = "#28a745";
+            msgDiv.innerText = "Pedido registrado com sucesso!";
+            
+            // Limpar formulário
+            document.getElementById('nome').value = "";
+            document.getElementById('numero').value = "";
+            
+            // Esconder mensagem após 3 segundos
+            setTimeout(() => { msgDiv.style.display = "none"; }, 3000);
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<svg width="780" height="662" viewBox="0 0 780 662" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="roughBlue" x="62" y="445" width="660" height="140" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="9" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="B"/>
+    </filter>
+    <linearGradient id="sunGold" x1="390" y1="190" x2="390" y2="486" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF166"/>
+      <stop offset="0.55" stop-color="#FFE617"/>
+      <stop offset="1" stop-color="#FFD200"/>
+    </linearGradient>
+    <filter id="sunGlow" x="62" y="120" width="656" height="420" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="whiteShadow" x="190" y="210" width="400" height="400" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#FFF173" flood-opacity="1"/>
+    </filter>
+  </defs>
+
+  <rect width="780" height="662" fill="transparent"/>
+
+  <g filter="url(#sunGlow)">
+    <path d="M390 132L401 223H379L390 132Z" fill="#FFD81E"/>
+    <path d="M426 138L425 228L402 225L426 138Z" fill="#FFD81E"/>
+    <path d="M462 150L447 238L425 232L462 150Z" fill="#FFD81E"/>
+    <path d="M497 167L468 252L448 241L497 167Z" fill="#FFD81E"/>
+    <path d="M530 190L487 270L469 256L530 190Z" fill="#FFD81E"/>
+    <path d="M559 218L503 291L489 274L559 218Z" fill="#FFD81E"/>
+    <path d="M584 252L518 316L508 297L584 252Z" fill="#FFD81E"/>
+    <path d="M603 288L528 342L522 322L603 288Z" fill="#FFD81E"/>
+    <path d="M617 326L536 368L534 347L617 326Z" fill="#FFD81E"/>
+    <path d="M625 366L540 394L543 373L625 366Z" fill="#FFD81E"/>
+    <path d="M628 407L542 421L549 401L628 407Z" fill="#FFD81E"/>
+    <path d="M625 448L541 447L552 428L625 448Z" fill="#FFD81E"/>
+    <path d="M616 488L535 473L549 456L616 488Z" fill="#FFD81E"/>
+    <path d="M601 525L528 497L546 483L601 525Z" fill="#FFD81E"/>
+    <path d="M581 559L517 520L539 509L581 559Z" fill="#FFD81E"/>
+    <path d="M556 589L503 541L526 533L556 589Z" fill="#FFD81E"/>
+    <path d="M526 615L488 559L512 555L526 615Z" fill="#FFD81E"/>
+    <path d="M494 635L468 576L493 576L494 635Z" fill="#FFD81E"/>
+    <path d="M461 648L447 585L471 589L461 648Z" fill="#FFD81E"/>
+
+    <path d="M390 132L379 223H401L390 132Z" fill="#FFD81E"/>
+    <path d="M354 138L355 228L378 225L354 138Z" fill="#FFD81E"/>
+    <path d="M318 150L333 238L355 232L318 150Z" fill="#FFD81E"/>
+    <path d="M283 167L312 252L332 241L283 167Z" fill="#FFD81E"/>
+    <path d="M250 190L293 270L311 256L250 190Z" fill="#FFD81E"/>
+    <path d="M221 218L277 291L291 274L221 218Z" fill="#FFD81E"/>
+    <path d="M196 252L262 316L272 297L196 252Z" fill="#FFD81E"/>
+    <path d="M177 288L252 342L258 322L177 288Z" fill="#FFD81E"/>
+    <path d="M163 326L244 368L246 347L163 326Z" fill="#FFD81E"/>
+    <path d="M155 366L240 394L237 373L155 366Z" fill="#FFD81E"/>
+    <path d="M152 407L238 421L231 401L152 407Z" fill="#FFD81E"/>
+    <path d="M155 448L239 447L228 428L155 448Z" fill="#FFD81E"/>
+    <path d="M164 488L245 473L231 456L164 488Z" fill="#FFD81E"/>
+    <path d="M179 525L252 497L234 483L179 525Z" fill="#FFD81E"/>
+    <path d="M199 559L263 520L241 509L199 559Z" fill="#FFD81E"/>
+    <path d="M224 589L277 541L254 533L224 589Z" fill="#FFD81E"/>
+    <path d="M254 615L292 559L268 555L254 615Z" fill="#FFD81E"/>
+    <path d="M286 635L312 576L287 576L286 635Z" fill="#FFD81E"/>
+    <path d="M319 648L333 585L309 589L319 648Z" fill="#FFD81E"/>
+  </g>
+
+  <circle cx="390" cy="390" r="196" fill="url(#sunGold)"/>
+  <g filter="url(#whiteShadow)">
+    <circle cx="390" cy="390" r="150" fill="#F7F7F7"/>
+  </g>
+
+  <rect x="101" y="452" width="568" height="102" fill="#F7F7F7"/>
+  <rect x="101" y="452" width="568" height="102" stroke="#D8D8D8" stroke-width="3"/>
+
+  <path d="M370 0H410V188H370V0Z" fill="#FFE81F"/>
+  <path d="M325 37H455V74H325V37Z" fill="#FFE81F"/>
+  <path d="M372 182C372 163 381 148 390 148C399 148 408 163 408 182V244H372V182Z" fill="#FFE81F"/>
+  <path d="M354 232C354 205 370 185 390 185C410 185 426 205 426 232V278H354V232Z" fill="#FFE81F"/>
+  <path d="M362 276H418V319H362V276Z" fill="#FFE81F"/>
+
+  <g filter="url(#roughBlue)">
+    <text x="388" y="541" text-anchor="middle" font-family="Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif" font-size="96" fill="#0C84CC" letter-spacing="2">
+      SENTINELAS
+    </text>
+  </g>
+
+  <text x="93" y="634" font-family="'Brush Script MT', 'Segoe Script', cursive" font-size="138" font-style="italic" fill="#FFE81F" transform="rotate(-5 93 634)">
+    da manhã
+  </text>
+</svg>
