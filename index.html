@@ -141,6 +141,134 @@
             border-radius: 5px;
             display: none;
         }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .modal-overlay.ativo {
+            display: flex;
+        }
+
+        .modal-confirmacao {
+            width: 100%;
+            max-width: 420px;
+            background: linear-gradient(180deg, rgba(0, 51, 102, 0.96), rgba(0, 86, 179, 0.96));
+            border: 2px solid rgba(255, 210, 0, 0.5);
+            border-radius: 18px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+            padding: 28px;
+            color: var(--branco);
+        }
+
+        .modal-confirmacao h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            color: var(--amarelo-brilhante);
+            text-transform: uppercase;
+        }
+
+        .modal-confirmacao p {
+            margin-top: 0;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .resumo-pedido {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 210, 0, 0.28);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .resumo-pedido strong {
+            display: block;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--amarelo-brilhante);
+            margin-bottom: 4px;
+        }
+
+        .resumo-pedido span {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 16px;
+            word-break: break-word;
+        }
+
+        .resumo-pedido span:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-acoes {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secundario,
+        .btn-confirmar {
+            flex: 1;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-secundario {
+            background: rgba(255, 255, 255, 0.14);
+            color: var(--branco);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+        }
+
+        .btn-confirmar {
+            background: linear-gradient(to bottom, var(--amarelo-brilhante), var(--amarelo-ouro));
+            color: var(--azul-escuro);
+            box-shadow: 0 4px 0 #b38600;
+        }
+
+        .btn-secundario:hover,
+        .btn-confirmar:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-secundario:disabled,
+        .btn-confirmar:disabled,
+        .btn-registrar:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: none;
+            box-shadow: none;
+        }
+
+        @media (max-width: 520px) {
+            .card-registro {
+                margin: 20px;
+                padding: 28px 22px;
+            }
+
+            .modal-confirmacao {
+                padding: 22px;
+            }
+
+            .modal-acoes {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
@@ -163,17 +291,66 @@
     <div id="mensagem"></div>
 </div>
 
+<div class="modal-overlay" id="modalConfirmacao" aria-hidden="true">
+    <div class="modal-confirmacao" role="dialog" aria-modal="true" aria-labelledby="tituloModalConfirmacao">
+        <h2 id="tituloModalConfirmacao">Confirmar Pedido</h2>
+        <p>Confira os dados abaixo antes de cadastrar o pedido.</p>
+
+        <div class="resumo-pedido">
+            <strong>Nome do Cliente</strong>
+            <span id="confirmacaoNome">-</span>
+
+            <strong>Número do Pedido</strong>
+            <span id="confirmacaoNumero">-</span>
+
+            <strong>Status Inicial</strong>
+            <span id="confirmacaoStatus">-</span>
+        </div>
+
+        <div class="modal-acoes">
+            <button type="button" class="btn-secundario" onclick="fecharModalConfirmacao()">Editar</button>
+            <button type="button" class="btn-confirmar" id="btnConfirmarPedido" onclick="confirmarPedido()">Confirmar Cadastro</button>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     const supabaseClient = window.supabase.createClient(
         "https://ypmizhvosfiiearmvzyd.supabase.co",
         "sb_publishable_3ZRLsJcSR6TMZTJ6N61icw_2DyGzvWh"
     );
+    const statusInicial = 'preparo';
+    const statusInicialLabel = 'Em preparo';
 
-    async function salvarPedido() {
-        const nome = document.getElementById('nome').value;
-        const numero = document.getElementById('numero').value;
-        const status = 'preparo';
+    function obterDadosFormulario() {
+        return {
+            nome: document.getElementById('nome').value.trim(),
+            numero: document.getElementById('numero').value.trim(),
+            status: statusInicial
+        };
+    }
+
+    function preencherResumoConfirmacao({ nome, numero, status }) {
+        document.getElementById('confirmacaoNome').innerText = nome;
+        document.getElementById('confirmacaoNumero').innerText = numero;
+        document.getElementById('confirmacaoStatus').innerText = status === statusInicial ? statusInicialLabel : status;
+    }
+
+    function abrirModalConfirmacao() {
+        const modal = document.getElementById('modalConfirmacao');
+        modal.classList.add('ativo');
+        modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function fecharModalConfirmacao() {
+        const modal = document.getElementById('modalConfirmacao');
+        modal.classList.remove('ativo');
+        modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function salvarPedido() {
+        const { nome, numero, status } = obterDadosFormulario();
         const msgDiv = document.getElementById('mensagem');
 
         if (!nome || !numero) {
@@ -181,17 +358,44 @@
             return;
         }
 
+        msgDiv.style.display = "none";
+        preencherResumoConfirmacao({ nome, numero, status });
+        abrirModalConfirmacao();
+    }
+
+    async function confirmarPedido() {
+        const { nome, numero, status } = obterDadosFormulario();
+        const msgDiv = document.getElementById('mensagem');
+        const btnRegistrar = document.querySelector('.btn-registrar');
+        const btnConfirmar = document.getElementById('btnConfirmarPedido');
+
+        if (!nome || !numero) {
+            fecharModalConfirmacao();
+            alert("Por favor, preencha todos os campos!");
+            return;
+        }
+
+        btnRegistrar.disabled = true;
+        btnConfirmar.disabled = true;
+        btnConfirmar.innerText = "Salvando...";
+
         const { data, error } = await supabaseClient
             .from('pedidos')
             .insert([
-                { cliente: nome, pedido: parseInt(numero), status: status }
+                { cliente: nome, pedido: parseInt(numero, 10), status: status }
             ]);
 
+        btnRegistrar.disabled = false;
+        btnConfirmar.disabled = false;
+        btnConfirmar.innerText = "Confirmar Cadastro";
+
         if (error) {
+            fecharModalConfirmacao();
             msgDiv.style.display = "block";
             msgDiv.style.backgroundColor = "#ff4d4d";
             msgDiv.innerText = "Erro ao salvar: " + error.message;
         } else {
+            fecharModalConfirmacao();
             msgDiv.style.display = "block";
             msgDiv.style.backgroundColor = "#28a745";
             msgDiv.innerText = "Pedido registrado com sucesso!";
@@ -204,6 +408,18 @@
             setTimeout(() => { msgDiv.style.display = "none"; }, 3000);
         }
     }
+
+    document.getElementById('modalConfirmacao').addEventListener('click', function (event) {
+        if (event.target.id === 'modalConfirmacao') {
+            fecharModalConfirmacao();
+        }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && document.getElementById('modalConfirmacao').classList.contains('ativo')) {
+            fecharModalConfirmacao();
+        }
+    });
 </script>
 
 </body>
